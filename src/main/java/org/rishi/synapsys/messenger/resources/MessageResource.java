@@ -10,6 +10,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.rishi.synapsys.messenger.model.Message;
@@ -34,7 +35,15 @@ public class MessageResource {
 	whose format return type is converted to xml.
 	**/
 	//@Produces(MediaType.APPLICATION_JSON)
-	public List<Message> getMessage(){
+	public List<Message> getMessage(@QueryParam ("year") int year,
+									@QueryParam ("start") int start,
+									@QueryParam ("size")int size){
+		if(year>0){
+			return messageService.getAllMessageForYear(year);
+		}
+		if(start >0 && size>0){
+			return messageService.getAllMessagesPaginated(start, size);
+		}
 		return messageService.getAllMessage();
 	}
 	
