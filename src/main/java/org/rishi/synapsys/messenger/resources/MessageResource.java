@@ -2,6 +2,7 @@ package org.rishi.synapsys.messenger.resources;
 
 import java.util.List;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -14,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.rishi.synapsys.messenger.model.Message;
+import org.rishi.synapsys.messenger.resources.beans.MessageFilterBeans;
 import org.rishi.synapsys.messenger.service.MessageService;
 
 @Path("/messages")
@@ -35,14 +37,16 @@ public class MessageResource {
 	whose format return type is converted to xml.
 	**/
 	//@Produces(MediaType.APPLICATION_JSON)
-	public List<Message> getMessage(@QueryParam ("year") int year,
-									@QueryParam ("start") int start,
-									@QueryParam ("size")int size){
-		if(year>0){
-			return messageService.getAllMessageForYear(year);
+	
+	/**
+	 * here @BeanParam helps us to access the Queryparam form MessageFilterBean class using its instance i.e filterBean
+	 * **/
+	public List<Message> getMessage(@BeanParam MessageFilterBeans filterBean){
+		if(filterBean.getYear()>0){
+			return messageService.getAllMessageForYear(filterBean.getYear());
 		}
-		if(start >0 && size>0){
-			return messageService.getAllMessagesPaginated(start, size);
+		if(filterBean.getStart() >=0 && filterBean.getSize()>0){
+			return messageService.getAllMessagesPaginated(filterBean.getStart(), filterBean.getSize());
 		}
 		return messageService.getAllMessage();
 	}
